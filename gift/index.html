@@ -34,6 +34,8 @@ const CONFIG = {
 
   filmTitle: "حكايتنا",
   letterTitle: "لورانتي",
+  loveLine1: "بحبك",        // الكلمة الكبيرة في الآخر
+  loveLine2: "يا لوران",
   letter: [
     "بكتبلك الكلام ده وأنا مش مرتّبه ولا مجهّزه…",
     "بس",
@@ -187,6 +189,13 @@ button:focus-visible{outline:3px solid var(--flame);outline-offset:3px}
 .again.on{opacity:1}
 .again button{background:transparent;border:1px solid var(--deep-rose);color:var(--deep-rose);border-radius:999px;padding:9px 20px;font-size:15px;margin:4px}
 
+#love{background:#05030b}
+#loveCv{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+.touchHint{position:absolute;left:0;right:0;bottom:calc(96px + env(safe-area-inset-bottom,0px));text-align:center;margin:0;color:var(--muted);
+  font-size:15px;opacity:0;transition:opacity 1.2s;pointer-events:none}
+.touchHint.on{opacity:.8}
+#love .again{position:absolute;left:0;right:0;bottom:calc(24px + env(safe-area-inset-bottom,0px));margin:0}
+#love .again button{border-color:var(--rose);color:var(--rose);background:rgba(5,3,11,.5)}
 #fx{position:fixed;inset:0;pointer-events:none;z-index:50;width:100%;height:100%}
 .mute{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:14px;z-index:60;background:rgba(0,0,0,.35);color:#fff;
   border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:6px 12px;font-size:15px}
@@ -236,12 +245,17 @@ button:focus-visible{outline:3px solid var(--flame);outline-offset:3px}
 <section id="final" class="screen"><div class="final-in"><div class="letter">
   <h2 id="letterTitle"></h2>
   <div id="letterBody"></div>
-    <div class="again" id="again">
-    <button id="replayFilm">شوفي الفيلم تاني</button>
-    <button id="replayAll">من الأول</button>
   </div>
 </div></div></section>
 
+<section id="love" class="screen">
+  <canvas id="loveCv"></canvas>
+  <p class="touchHint" id="touchHint">المسي الكلام 🤍</p>
+  <div class="again" id="again">
+    <button id="replayFilm">شوفي الفيلم تاني</button>
+    <button id="replayAll">من الأول</button>
+  </div>
+</section>
 <canvas id="fx"></canvas>
 <button class="mute hidden" id="mute" aria-label="كتم الصوت">🔊</button>
 <audio id="song" preload="auto"></audio>
@@ -534,7 +548,7 @@ const Film={stopFlag:false,
     await sleep(3200);if(this.stopFlag)return;tc.classList.add("gone");
     // duration per photo: fits the song length if there is one
     let per=5600;
-    if(useSong&&isFinite(songEl.duration)){per=Math.min(8000,Math.max(3500,(songEl.duration-songEl.currentTime-12)*1000/photos.length))}
+    if(useSong&&isFinite(songEl.duration)){per=Math.min(8000,Math.max(3000,(songEl.duration-songEl.currentTime-3.5-1.4-24)*1000/photos.length))}
     const layers=[$("sA"),$("sB")];
     for(let i=0;i<photos.length;i++){
       if(this.stopFlag)return;
@@ -555,7 +569,7 @@ const Film={stopFlag:false,
     if(this.stopFlag)return;this.stopFlag=true;
     $("sA").classList.remove("on");$("sB").classList.remove("on");$("caption").classList.remove("on");
     await sleep(1400);
-    if(useSong)fadeAudio(songEl,.35,3000);
+    if(useSong&&!songEl.paused)fadeAudio(songEl,.9,1500);
     Final.run();
   }
 };
@@ -581,10 +595,62 @@ const Final={async run(){
       await sleep(line.length<6?900:600);
     }
   }
-  await sleep(1500);$("again").classList.add("on");
+  await sleep(2600);Love.run();
 }};
-$("replayFilm").onclick=()=>{songEl.pause();Music.setVol(.8);Film.run()};
-$("replayAll").onclick=()=>{songEl.pause();if(hasCake){Music.fxOnly();cakeEl.currentTime=0;cakeEl.volume=1;cakeEl.play().catch(()=>{})}else Music.play("box");Cake.start()};
+
+/* ================= بحبك يا لوران: the words are made of light ================= */
+const Love={raf:null,P:[],ptr:null,t0:0,
+  async run(){
+    show("love");$("again").classList.remove("on");$("touchHint").classList.remove("on");
+    const cv=$("loveCv"),cx=cv.getContext("2d"),d=Math.min(2,devicePixelRatio||1),W=innerWidth,H=innerHeight;
+    cv.width=W*d;cv.height=H*d;cx.setTransform(d,0,0,d,0,0);
+    try{await document.fonts.load('700 100px "Aref Ruqaa"')}catch(e){}
+    // draw the words off-screen, then turn every lit pixel into a particle
+    const off=document.createElement("canvas");off.width=W;off.height=H;const o=off.getContext("2d");
+    o.fillStyle="#fff";o.textAlign="center";o.textBaseline="middle";o.direction="rtl";
+    const font=px=>`700 ${px}px "Aref Ruqaa","Amiri","Times New Roman",serif`;
+    let f1=Math.min(W*.46,H*.26);o.font=font(f1);const w1=o.measureText(CONFIG.loveLine1).width;if(w1>W*.9)f1*=W*.9/w1;
+    let f2=f1*.6;o.font=font(f2);const w2=o.measureText(CONFIG.loveLine2).width;if(w2>W*.9)f2*=W*.9/w2;
+    const y1=H*.36,y2=y1+f1*.62+f2*.75;
+    o.font=font(f1);o.fillText(CONFIG.loveLine1,W/2,y1);o.font=font(f2);o.fillText(CONFIG.loveLine2,W/2,y2);
+    const img=o.getImageData(0,0,W,H).data,step=Math.max(2,Math.round(Math.sqrt(W*H/15000)));
+    const T=[];for(let y=0;y<H;y+=step)for(let x=0;x<W;x+=step)if(img[(y*W+x)*4+3]>140)T.push([x,y]);
+    const cols=[[255,143,171],[255,196,107],[255,214,227],[247,236,255]];
+    this.P=T.map(([x,y])=>{const a=Math.random()*Math.PI*2,r=Math.max(W,H)*(.55+Math.random()*.5);
+      const c=Math.random()<.18?cols[3]:(x/W<.5?cols[0]:cols[1]);
+      return {x:W/2+Math.cos(a)*r,y:H/2+Math.sin(a)*r,tx:x,ty:y,vx:0,vy:0,c:`rgb(${c})`,delay:Math.random()*1400+(1-x/W)*700,s:Math.random()*9,sz:step*.75+Math.random()*.9}});
+    this.t0=performance.now();this.beat=0;cancelAnimationFrame(this.raf);
+    const P=this.P;
+    const loop=()=>{
+      const t=performance.now()-this.t0;
+      cx.globalCompositeOperation="source-over";cx.fillStyle="rgba(5,3,11,.28)";cx.fillRect(0,0,W,H);cx.globalCompositeOperation="lighter";
+      this.beat*=.93;const grow=1+this.beat*.8;
+      for(const p of P){
+        if(t<p.delay)continue;
+        // pull home, wobble a little, run away from her finger
+        let ax=(p.tx+Math.sin(t*.0017+p.s)*.8-p.x)*.012,ay=(p.ty+Math.cos(t*.0013+p.s)*.8-p.y)*.012;
+        if(this.ptr){const dx=p.x-this.ptr.x,dy=p.y-this.ptr.y,dd=dx*dx+dy*dy;if(dd<6400){const k=(6400-dd)/6400*2.2/Math.sqrt(dd+1);ax+=dx*k;ay+=dy*k}}
+        p.vx=(p.vx+ax)*.86;p.vy=(p.vy+ay)*.86;p.x+=p.vx;p.y+=p.vy;
+        const tw=.55+.45*Math.sin(t*.004+p.s);cx.globalAlpha=tw;cx.fillStyle=p.c;
+        const z=p.sz*grow;cx.fillRect(p.x-z/2,p.y-z/2,z,z);
+      }
+      cx.globalAlpha=1;this.raf=requestAnimationFrame(loop);
+    };
+    loop();Music.sparkle();
+    // when the words have formed: the heart beats with them
+    await sleep(3600);
+    for(let b=0;b<2;b++){this.beat=1;Music.thump(0,.7);Phone.buzz(40);await sleep(240);this.beat=.8;Music.thump(0,.5);await sleep(700)}
+    FX.confetti(140);for(let i=0;i<4;i++)setTimeout(()=>FX.rocket(),i*500);
+    $("touchHint").classList.add("on");
+    await sleep(2500);$("again").classList.add("on");
+  },
+  stop(){cancelAnimationFrame(this.raf);this.raf=null}
+};
+{const cv=$("loveCv");const at=e=>{Love.ptr={x:e.clientX,y:e.clientY}};
+ cv.addEventListener("pointerdown",at);cv.addEventListener("pointermove",at);
+ ["pointerup","pointerleave","pointercancel"].forEach(v=>cv.addEventListener(v,()=>Love.ptr=null));}
+$("replayFilm").onclick=()=>{Love.stop();songEl.pause();Music.setVol(.8);Film.run()};
+$("replayAll").onclick=()=>{Love.stop();songEl.pause();if(hasCake){Music.fxOnly();cakeEl.currentTime=0;cakeEl.volume=1;cakeEl.play().catch(()=>{})}else Music.play("box");Cake.start()};
 </script>
 </body>
 </html>
