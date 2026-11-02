@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark only">
+<meta name="theme-color" content="#140b26">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<title>🎂 عندك مفاجأة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<script>
+/* =====================================================================
+   ✏️  عدّل هنا بس — كل حاجة شخصية في المكان ده
+   ===================================================================== */
+const CONFIG = {
+  firstName: "لوزتي",   // أول جملة: كل سنة وانتي طيبة يا لوزتي
+  petName: "سوسو",      // بعد كده: على التورتة ولحظة الانفجار
+  // والآخر "لورانتي" في الجواب (letterTitle تحت)
+  age: 25,   // هتتم كام سنة: بيتعمل شمع بالعدد ده + شمعة على شكل الرقم
+
+  // الصور: حطها في فولدر photos وسمّيها 1.jpg و 2.jpg و 3.jpg … بالترتيب
+  // الكلام اللي يظهر على كل صورة بنفس الترتيب (اللي فاضي بيظهر من غير كلام):
+  captions: [
+    "الحكاية بدأت من هنا"
+  ],
+
+  // الأغنية: حطها في فولدر music باسم song (أي امتداد: mp3 أو mpeg أو m4a أو wav أو ogg)
+  // لو مفيش أغنية، الموقع هيشغّل موسيقى أصلية بيألفها لوحده
+  cakeSong: "music/cake",   // موسيقى التورتة: حطها باسم cake (mp3 أو mpeg …)
+  song: "music/song",       // أغنيتكم: بتبدأ مع الانفجار وتكمّل على الصور
+
+  filmTitle: "حكايتنا",
+  letterTitle: "لورانتي",
+  letter: [
+    "بكتبلك الكلام ده وأنا مش مرتّبه ولا مجهّزه…",
+    "بس",
+    "كل سنة وانتي طيبة",
+    "كل سنة وانتي الحب والحنان",
+    "كل سنة وانتي الوفاء",
+    "كل سنة وانتي الجمال",
+    "كل سنة وانتي الحب",
+    "كل سنة وانتي الكل",
+    "وكل سنة وانتي طيبة وبخير دايماً يا لورانتي ❤️"
+  ]
+};
+</script>
+<style>
+:root{
+  --night:#140b26; --plum:#2a1640; --rose:#ff8fab; --deep-rose:#c2456b;
+  --flame:#ffc46b; --moon:#f7ecff; --muted:#c3abd6; --paper:#fff7f9; --ink:#3b1f4f;
+  color-scheme:dark only; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;background:var(--night);-webkit-text-size-adjust:100%;text-size-adjust:100%;overscroll-behavior:none}
+body{margin:0;height:100%;background:var(--night);color:var(--moon);overflow:hidden;overscroll-behavior:none;-webkit-tap-highlight-color:transparent;
+  font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif;font-size:18px;line-height:1.7}
+h1,h2,.script{font-family:"Aref Ruqaa","Amiri","Times New Roman",serif;font-weight:700;line-height:1.3;margin:0}
+button{font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+button:focus-visible{outline:3px solid var(--flame);outline-offset:3px}
+.screen{position:fixed;inset:0;display:none;overflow:hidden}
+.screen.on{display:block}
+.center{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px}
+.hidden{display:none !important}
+.btn{background:var(--flame);color:var(--ink);border:none;border-radius:999px;padding:15px 32px;font-size:19px;font-weight:700;
+  box-shadow:0 10px 30px rgba(255,196,107,.35)}
+.fade{animation:fade 1s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ---------- intro ---------- */
+#intro{background:radial-gradient(ellipse at 50% 40%,#3a2152,var(--night) 70%)}
+.gift{font-size:96px;animation:bob 1.6s ease-in-out infinite;display:inline-block;margin-bottom:10px}
+@keyframes bob{50%{transform:translateY(-14px) rotate(-6deg)}}
+#intro h1{font-size:clamp(36px,9vw,64px);color:var(--rose);margin-bottom:6px}
+#intro p{color:var(--muted);margin:0 0 28px}
+
+/* ---------- cake ---------- */
+#cake{background:radial-gradient(ellipse at 50% 85%,#3b1f4f,var(--night) 65%);transition:background 1.2s}
+#cake.dark{background:#05030b}
+.cake-in{position:absolute;inset:0;overflow:auto;padding:clamp(40px,10vh,90px) 20px 30px;text-align:center}
+.cake-in h2{font-size:clamp(32px,8vw,52px)}
+.cake-in .sub{color:var(--muted);margin:4px 0 0;min-height:1.7em}
+.cakebox{position:relative;width:min(86vw,340px);margin:clamp(110px,18vh,150px) auto 30px;transition:opacity 1.4s}
+#cake.dark .cakebox{opacity:.12}
+#cake .cake-in h2{transition:opacity 1.4s}
+#cake.dark .cake-in h2{opacity:0}
+.tier{position:relative;margin:0 auto}
+.tier .body{position:relative;z-index:1;border-radius:0 0 50% 50%/0 0 24px 24px}
+.tier .top{z-index:2}
+.tier .top{position:absolute;left:0;right:0;border-radius:50%}
+.t1{width:74%;z-index:2}
+.t1 .body{height:64px;background:linear-gradient(90deg,#e98aa8,#ffd0de 45%,#f6b2c7 70%,#d9708f)}
+.t1 .top{top:-22px;height:44px;background:radial-gradient(ellipse at 50% 40%,#fff4f7,#ffd6e3 70%);box-shadow:inset 0 -3px 0 #fff,0 3px 0 rgba(255,255,255,.8)}
+.t2{width:100%;margin-top:-16px;z-index:1}
+.t2 .body{height:96px;background:linear-gradient(90deg,#a8325a,#f4a3bd 45%,#e07c9d 70%,#8e2a4e)}
+.t2 .top{top:-28px;height:56px;background:radial-gradient(ellipse at 50% 40%,#ffd0de,#f4a3bd 75%)}
+.t2 .body::before{content:"";position:absolute;left:0;right:0;top:4px;height:16px;
+  background:radial-gradient(circle at 8px 0,#fff 7px,transparent 8px) 0 0/16px 16px repeat-x;opacity:.9}
+.plate{width:118%;margin:-14px -9% 0;height:26px;border-radius:50%;background:radial-gradient(ellipse,#fff,#d9cbe6);opacity:.85;position:relative;z-index:0}
+.tiername{position:absolute;inset:16px 0 0;display:grid;place-items:center;font-family:"Aref Ruqaa",serif;font-size:32px;color:#fff;text-shadow:0 2px 8px rgba(80,10,40,.45)}
+.rim{position:absolute;inset:0}
+.candle{position:absolute;width:6px;height:30px;border-radius:2px;transform:translate(-50%,-100%);
+  background:repeating-linear-gradient(160deg,#fff 0 4px,#ff8fab 4px 8px);box-shadow:inset -1px 0 0 rgba(0,0,0,.12)}
+.candle.gold{background:repeating-linear-gradient(160deg,#fff 0 4px,#ffc46b 4px 8px)}
+.candle::before{content:"";position:absolute;bottom:100%;left:50%;width:1.5px;height:5px;margin-left:-.75px;background:#3b1f4f}
+.flame{position:absolute;bottom:calc(100% + 3px);left:50%;width:10px;height:17px;margin-left:-5px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
+  background:radial-gradient(ellipse at 50% 75%,#fff 10%,#ffd36b 40%,#ff8a3d 75%,transparent 80%);
+  box-shadow:0 0 14px 4px rgba(255,196,107,.5);transform-origin:50% 100%;animation:flick .25s ease-in-out infinite alternate;
+  animation-delay:calc(var(--d,0) * -1s)}
+.digits{position:absolute;left:50%;top:40%;transform:translate(-50%,-100%);display:flex;gap:2px;z-index:10;direction:ltr}
+.num{position:relative;font:900 76px/.86 "Tajawal","Arial Black",sans-serif;padding:0 2px;
+  background:repeating-linear-gradient(135deg,#fff 0 7px,#ff8fab 7px 14px);-webkit-background-clip:text;background-clip:text;color:transparent;
+  -webkit-text-stroke:2px #c2456b;filter:drop-shadow(0 4px 6px rgba(60,10,40,.35))}
+.num::before{content:"";position:absolute;bottom:100%;left:50%;width:2px;height:8px;margin-left:-1px;background:#3b1f4f}
+.num .flame{bottom:calc(100% + 6px);width:18px;height:30px;margin-left:-9px;box-shadow:0 0 26px 8px rgba(255,196,107,.6)}
+.flame.wobble{animation:wob .12s linear infinite alternate}
+@keyframes flick{to{transform:scaleY(1.12) rotate(2deg)}}
+@keyframes wob{from{transform:skewX(-18deg) scaleY(.85)}to{transform:skewX(14deg) scaleY(.75)}}
+.flame.out{animation:none;opacity:0;transform:scaleY(.2);transition:.4s;box-shadow:none}
+.smoke{position:absolute;bottom:100%;left:50%;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:rgba(220,220,230,.5);animation:smoke 1.8s ease-out forwards;pointer-events:none}
+@keyframes smoke{to{transform:translate(-8px,-60px) scale(4);opacity:0}}
+.meter{height:8px;border-radius:8px;background:rgba(255,255,255,.12);overflow:hidden;width:100%;max-width:260px;margin:0 auto 16px}
+.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ffc46b,#ff8fab);transition:width .08s}
+.holdbtn{background:transparent;border:1px dashed rgba(255,255,255,.4);color:#e9dcf3;border-radius:999px;padding:10px 20px;font-size:15px;
+  user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:none}
+.holdbtn.active{background:rgba(255,255,255,.14)}
+
+/* ---------- boom ---------- */
+#boom{background:#05030b}
+#boom.flash{animation:flash .6s ease-out}
+@keyframes flash{0%{background:#fff}100%{background:#05030b}}
+.shake{animation:shake .5s}
+@keyframes shake{20%{transform:translate(-10px,6px)}40%{transform:translate(8px,-8px)}60%{transform:translate(-6px,4px)}80%{transform:translate(4px,-2px)}}
+.slam{font-size:clamp(46px,12vw,110px);color:var(--flame);text-shadow:0 0 40px rgba(255,196,107,.6);
+  animation:slam .7s cubic-bezier(.2,1.6,.4,1) both}
+.slam2{font-size:clamp(38px,10vw,84px);color:var(--rose);text-shadow:0 0 40px rgba(255,143,171,.6);
+  animation:slam .7s cubic-bezier(.2,1.6,.4,1) .45s both}
+@keyframes slam{from{transform:scale(4);opacity:0;filter:blur(10px)}to{transform:none;opacity:1;filter:none}}
+.wait{color:var(--muted);margin-top:26px;opacity:0;transition:opacity 1s}
+.wait.on{opacity:1}
+
+/* ---------- film ---------- */
+#film{background:#000}
+.slide{position:absolute;inset:0;opacity:0;transition:opacity 1.4s ease}
+.slide.on{opacity:1}
+.slide .bg{position:absolute;inset:-40px;width:calc(100% + 80px);height:calc(100% + 80px);object-fit:cover;filter:blur(22px) brightness(.45) saturate(1.2);transform:translateZ(0)}
+.slide .fg{will-change:transform}
+.slide .fg{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.slide.kb .fg{animation:kb var(--dur,6s) linear forwards}
+.slide.kb.alt .fg{animation-name:kb2}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.12) translate(-1.5%,-1%)}}
+@keyframes kb2{from{transform:scale(1.12) translate(1.5%,1%)}to{transform:scale(1)}}
+.bars::before,.bars::after{content:"";position:absolute;left:0;right:0;height:0;background:#000;z-index:5;transition:height 1.5s ease}
+.bars::before{top:0}.bars::after{bottom:0}
+.bars.on::before,.bars.on::after{height:9vh;height:9dvh}
+.caption{position:absolute;left:0;right:0;bottom:calc(9vh + 26px);z-index:6;text-align:center;padding:0 24px;
+  font-family:"Aref Ruqaa",serif;font-size:clamp(24px,5.5vw,40px);text-shadow:0 2px 12px rgba(0,0,0,.9);
+  opacity:0;transform:translateY(10px);transition:opacity 1s,transform 1s}
+.caption.on{opacity:1;transform:none}
+.titlecard{position:absolute;inset:0;z-index:7;display:grid;place-items:center;text-align:center;background:#000;transition:opacity 1.6s}
+.titlecard small{display:block;color:var(--muted);font-size:17px;letter-spacing:.02em;margin-bottom:6px}
+.titlecard h1{font-size:clamp(54px,14vw,120px);color:var(--moon)}
+.titlecard.gone{opacity:0;pointer-events:none}
+.progress{position:absolute;left:0;right:0;bottom:9vh;height:3px;z-index:6;background:rgba(255,255,255,.12)}
+.progress i{display:block;height:100%;width:0;background:var(--rose);transition:width .3s linear}
+.skip{position:absolute;top:calc(9vh + 12px);left:14px;z-index:8;background:rgba(0,0,0,.4);color:#ddd;border:1px solid rgba(255,255,255,.25);
+  border-radius:999px;padding:6px 14px;font-size:14px}
+
+/* ---------- final ---------- */
+#final{background:radial-gradient(ellipse at 50% 30%,#3a2152,var(--night) 70%)}
+.final-in{position:absolute;inset:0;overflow:auto;display:grid;place-items:center;padding:30px 20px}
+.letter{max-width:480px;width:100%;background:var(--paper);color:var(--ink);border-radius:18px;padding:30px 26px;text-align:right;
+  box-shadow:0 30px 80px rgba(0,0,0,.55);animation:fade 1.2s ease both}
+.letter h2{color:var(--deep-rose);font-size:clamp(30px,7vw,40px);text-align:center;margin-bottom:12px}
+.letter p{margin:0 0 10px;min-height:1em}
+.letter .line{margin:0 0 6px}
+.letter .wish{font-family:"Aref Ruqaa",serif;font-size:clamp(22px,5vw,27px);text-align:center;color:var(--ink);margin:0 0 4px;
+  opacity:0;transform:scale(.9);transition:opacity .7s,transform .7s}
+.letter .wish.on{opacity:1;transform:none}
+.letter .wish.last{color:var(--deep-rose);font-size:clamp(26px,6vw,32px);margin-top:14px}
+.letter .sig{text-align:left;font-family:"Aref Ruqaa",serif;font-size:26px;color:var(--deep-rose);opacity:0;transition:opacity 1.5s}
+.letter .sig.on{opacity:1}
+.again{text-align:center;margin-top:18px;opacity:0;transition:opacity 1s}
+.again.on{opacity:1}
+.again button{background:transparent;border:1px solid var(--deep-rose);color:var(--deep-rose);border-radius:999px;padding:9px 20px;font-size:15px;margin:4px}
+
+#fx{position:fixed;inset:0;pointer-events:none;z-index:50;width:100%;height:100%}
+.mute{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:14px;z-index:60;background:rgba(0,0,0,.35);color:#fff;
+  border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:6px 12px;font-size:15px}
+@media (prefers-reduced-motion: reduce){
+  .gift,.flame,.slam,.slam2,.slide.kb .fg{animation:none !important}
+}
+</style>
+</head>
+<body>
+
+<section id="intro" class="screen on"><div class="center"><div class="fade">
+  <div class="gift">🎁</div>
+  <h1 id="introTitle"></h1>
+  <p>فيه مفاجأة صغيرة مستنياكي… علّي الصوت</p>
+  <button class="btn" id="openBtn">افتحي الهدية</button>
+</div></div></section>
+
+<section id="cake" class="screen"><div class="cake-in">
+  <h2>اتمني أمنية… وانفخي</h2>
+  <p class="sub" id="cakeSub">انفخي في المايك كأنك بتطفي شمع حقيقي</p>
+  <div class="cakebox" id="cakebox">
+    <div class="tier t1"><div class="top"><div class="rim" id="rim"></div></div><div class="body"></div></div>
+    <div class="tier t2"><div class="top"></div><div class="body"><div class="tiername" id="cakeName"></div></div></div>
+    <div class="plate"></div>
+  </div>
+  <div id="cakeCtrl">
+    <div class="meter"><i id="meter"></i></div>
+    <button class="holdbtn" id="holdBtn">المايك مش شغال؟ اضغطي مطوّل هنا وانفخي</button>
+  </div>
+</div></section>
+
+<section id="boom" class="screen"><div class="center"><div>
+  <h1 class="slam">كل سنة وانتي طيبة</h1>
+  <h1 class="slam2" id="boomName"></h1>
+  <p class="wait" id="wait">استني… لسه فيه حاجة</p>
+</div></div></section>
+
+<section id="film" class="screen bars">
+  <div class="slide" id="sA"><img class="bg" alt=""><img class="fg" alt=""></div>
+  <div class="slide" id="sB"><img class="bg" alt=""><img class="fg" alt=""></div>
+  <div class="caption" id="caption"></div>
+  <div class="progress"><i id="prog"></i></div>
+  <div class="titlecard" id="titlecard"><div><small>فيلم قصير عن أحلى حكاية</small><h1 id="filmTitle"></h1></div></div>
+  <button class="skip" id="skip">تخطّي</button>
+</section>
+
+<section id="final" class="screen"><div class="final-in"><div class="letter">
+  <h2 id="letterTitle"></h2>
+  <div id="letterBody"></div>
+    <div class="again" id="again">
+    <button id="replayFilm">شوفي الفيلم تاني</button>
+    <button id="replayAll">من الأول</button>
+  </div>
+</div></div></section>
+
+<canvas id="fx"></canvas>
+<button class="mute hidden" id="mute" aria-label="كتم الصوت">🔊</button>
+<audio id="song" preload="auto"></audio>
+<audio id="cakeSong" preload="auto" loop></audio>
+
+<script>
+const $=id=>document.getElementById(id);
+function show(id){document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("on",s.id===id))}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+/* ================= Music: original, generated live ================= */
+const Music={
+  ctx:null,master:null,dry:null,timer:null,next:0,step:0,song:null,muted:false,vol:.8,
+  init(){
+    if(this.ctx)return;const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+    const c=this.ctx=new AC();this.master=c.createGain();this.master.gain.value=0;
+    const len=c.sampleRate*3,ir=c.createBuffer(2,len,c.sampleRate);
+    for(let ch=0;ch<2;ch++){const d=ir.getChannelData(ch);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.4)}
+    const rev=c.createConvolver();rev.buffer=ir;const wet=c.createGain();wet.gain.value=.5;
+    this.dry=c.createGain();this.dry.gain.value=.8;this.dry.connect(this.master);this.dry.connect(rev);rev.connect(wet);wet.connect(this.master);
+    this.master.connect(c.destination);
+  },
+  mtof:m=>440*Math.pow(2,(m-69)/12),
+  songs:{
+    // صندوق موسيقى هادي قبل الشمع
+    box:{bpm:70,chords:[[57,60,64],[53,57,60],[48,55,64],[55,59,62]],
+      mel:[76,0,74,72,72,0,69,0,67,0,72,74,74,0,71,0,76,0,79,77,77,0,76,72,72,74,76,0,74,0,0,0],melEvery:2,arp:"sine",arpVol:.035},
+    // لحن الفيلم: أدفى وأكبر
+    film:{bpm:62,chords:[[50,57,62,66],[45,57,61,64],[47,59,62,66],[43,55,59,62]],
+      mel:[78,0,76,74,76,0,69,0,73,0,74,76,76,0,0,0,74,0,73,71,71,0,74,0,74,76,74,71,67,0,0,0,
+           81,0,78,0,76,0,74,0,73,0,76,0,81,0,0,0,79,0,78,76,74,0,71,0,74,0,76,73,74,0,0,0],melEvery:1,arp:"triangle",arpVol:.025}
+  },
+  note(f,t,dur,type,vol,att){
+    const c=this.ctx,o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.value=f;
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+att);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+    o.connect(g);g.connect(this.dry);o.start(t);o.stop(t+dur+.05);
+  },
+  tick(){
+    const s=this.song,c=this.ctx,e=60/s.bpm/2;
+    while(this.next<c.currentTime+.25){
+      const k=this.step,bar=Math.floor(k/8)%4,ch=s.chords[bar],t=this.next;
+      if(k%8===0){ch.forEach(m=>this.note(this.mtof(m),t,e*8.6,"triangle",.04,.7));this.note(this.mtof(ch[0]-12),t,e*7,"sine",.09,.05)}
+      this.note(this.mtof(ch[[0,1,2,1,2,1,0,1][k%8]%ch.length]+12),t,1.1,s.arp,s.arpVol,.005);
+      const m=s.mel[k%s.mel.length];
+      if(m&&Math.floor(k/s.mel.length)%s.melEvery===(s.melEvery-1)){this.note(this.mtof(m),t,2,"sine",.065,.008);this.note(this.mtof(m+12),t,1,"sine",.012,.005)}
+      this.step++;this.next+=e;
+    }
+  },
+  play(name){
+    this.init();if(!this.ctx)return;this.ctx.resume();clearTimeout(this.stopT);
+    this.song=this.songs[name];this.step=0;this.next=this.ctx.currentTime+.1;
+    if(!this.timer)this.timer=setInterval(()=>this.tick(),60);
+    this.fade(this.muted?0:this.vol,1.5);
+  },
+  fxOnly(){this.init();if(!this.ctx)return;this.ctx.resume();clearTimeout(this.stopT);clearInterval(this.timer);this.timer=null;this.vol=.8;this.fade(this.muted?0:.8,.05)},
+  stop(){this.fade(0,1.5);this.stopT=setTimeout(()=>{clearInterval(this.timer);this.timer=null},1600)},
+  fade(v,t=.8){if(!this.ctx)return;const g=this.master.gain,n=this.ctx.currentTime;g.cancelScheduledValues(n);g.setValueAtTime(g.value,n);g.linearRampToValueAtTime(v,n+t)},
+  setVol(v){this.vol=v;this.fade(this.muted?0:v)},
+  sparkle(){if(!this.ctx||this.muted)return;const t=this.ctx.currentTime;[84,88,91,96,100].forEach((m,i)=>this.note(this.mtof(m),t+i*.08,1.2,"sine",.05,.005))},
+  thump(delay=0,vol=.7){
+    if(!this.ctx||this.muted)return;const c=this.ctx,t=c.currentTime+delay,o=c.createOscillator(),g=c.createGain();
+    o.frequency.setValueAtTime(75,t);o.frequency.exponentialRampToValueAtTime(38,t+.22);
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.015);g.gain.exponentialRampToValueAtTime(.001,t+.3);
+    o.connect(g);g.connect(this.master);o.start(t);o.stop(t+.35);
+  },
+  boom(delay=0,big=1){
+    if(!this.ctx||this.muted)return;const c=this.ctx,t=c.currentTime+delay,len=c.sampleRate*1.6,b=c.createBuffer(1,len,c.sampleRate),d=b.getChannelData(0);
+    for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,3);
+    const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=b;f.type="lowpass";f.frequency.value=700*big;
+    g.gain.setValueAtTime(.9*big,t);g.gain.exponentialRampToValueAtTime(.001,t+1.6);src.connect(f);f.connect(g);g.connect(this.master);src.start(t);
+    const o=c.createOscillator(),og=c.createGain();o.frequency.setValueAtTime(120,t);o.frequency.exponentialRampToValueAtTime(35,t+.5);
+    og.gain.setValueAtTime(.8*big,t);og.gain.exponentialRampToValueAtTime(.001,t+.6);o.connect(og);og.connect(this.master);o.start(t);o.stop(t+.7);
+  }
+};
+
+/* ================= Particles: confetti + fireworks ================= */
+const FX=(()=>{
+  const cv=$("fx"),cx=cv.getContext("2d");let P=[],raf=null;
+  const size=()=>{const d=devicePixelRatio||1;cv.width=innerWidth*d;cv.height=innerHeight*d;cx.setTransform(d,0,0,d,0,0)};
+  addEventListener("resize",size);size();
+  const cols=["#ff8fab","#ffc46b","#f7ecff","#c2456b","#9ad7ff","#b98bff"];
+  const heart=(x,y,s)=>{cx.beginPath();cx.moveTo(x,y+s/4);cx.bezierCurveTo(x,y,x-s/2,y,x-s/2,y+s/4);cx.bezierCurveTo(x-s/2,y+s/2,x,y+s*.7,x,y+s);
+    cx.bezierCurveTo(x,y+s*.7,x+s/2,y+s/2,x+s/2,y+s/4);cx.bezierCurveTo(x+s/2,y,x,y,x,y+s/4);cx.fill()};
+  function confetti(n=200){for(let i=0;i<n;i++)P.push({k:"c",x:innerWidth/2,y:innerHeight*.45,vx:(Math.random()-.5)*15,vy:-Math.random()*15-3,
+    r:Math.random()*6+4,c:cols[i%cols.length],rot:Math.random()*6,vr:(Math.random()-.5)*.3,h:Math.random()<.3,life:0});go()}
+  function rocket(x){P.push({k:"r",x:x??innerWidth*(.2+Math.random()*.6),y:innerHeight,vx:(Math.random()-.5)*2,vy:-(innerHeight/55+Math.random()*4),c:cols[Math.random()*cols.length|0],life:0});go()}
+  function explode(p){const n=90,heartShape=Math.random()<.4;
+    for(let i=0;i<n;i++){const a=i/n*Math.PI*2;let vx,vy;
+      if(heartShape){vx=16*Math.sin(a)**3*.38;vy=-(13*Math.cos(a)-5*Math.cos(2*a)-2*Math.cos(3*a)-Math.cos(4*a))*.38}
+      else{const s=Math.random()*6+2;vx=Math.cos(a)*s;vy=Math.sin(a)*s}
+      P.push({k:"s",x:p.x,y:p.y,vx,vy,c:p.c,life:0,max:70+Math.random()*30})}
+    Music.boom(0,.5)}
+  // fireflies: every candle that goes out leaves a little light behind
+  let beat=0;
+  function fly(x,y){P.push({k:"f",x,y,vx:(Math.random()-.5)*.6,vy:-.6-Math.random()*.5,seed:Math.random()*9,life:0,c:Math.random()<.5?"#ffc46b":"#ffd6e3"});go()}
+  function gather(){
+    const F=P.filter(p=>p.k==="f"),n=F.length,cxp=innerWidth/2,cyp=innerHeight*.42,sc=Math.min(innerWidth,innerHeight)/42;
+    F.forEach((p,i)=>{const t=i/n*Math.PI*2;p.tx=cxp+16*Math.sin(t)**3*sc;p.ty=cyp-(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t))*sc});
+  }
+  function pulse(){beat=1}
+  function burstFlies(){P.forEach(p=>{if(p.k!=="f")return;const a=Math.random()*7,v=4+Math.random()*7;
+    Object.assign(p,{k:"s",vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:0,max:80+Math.random()*40})})}
+  function clearFlies(){P=P.filter(p=>p.k!=="f")}
+  function go(){if(!raf)raf=requestAnimationFrame(loop)}
+  function loop(){
+    cx.globalCompositeOperation="source-over";cx.clearRect(0,0,innerWidth,innerHeight);cx.globalCompositeOperation="lighter";
+    const born=[];
+    for(const p of P){p.life++;
+      if(p.k==="c"){p.vy+=.28;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;cx.globalCompositeOperation="source-over";cx.fillStyle=p.c;cx.save();cx.translate(p.x,p.y);cx.rotate(p.rot);
+        p.h?heart(0,-p.r,p.r*2):cx.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);cx.restore();cx.globalCompositeOperation="lighter"}
+      else if(p.k==="f"){
+        if(p.tx!=null){p.x+=(p.tx-p.x)*.045;p.y+=(p.ty-p.y)*.045}
+        else{p.vy*=.993;p.x+=p.vx+Math.sin(p.life*.04+p.seed)*.35;p.y+=p.vy;if(p.y<innerHeight*.12)p.vy=Math.abs(p.vy)*.3}
+        const tw=.65+.35*Math.sin(p.life*.09+p.seed),r=7*(1+beat*.9);
+        const g=cx.createRadialGradient(p.x,p.y,0,p.x,p.y,r*2.2);g.addColorStop(0,p.c);g.addColorStop(.25,p.c+"aa");g.addColorStop(1,p.c+"00");
+        cx.globalAlpha=tw;cx.fillStyle=g;cx.beginPath();cx.arc(p.x,p.y,r*2.2,0,7);cx.fill();cx.globalAlpha=1}
+      else if(p.k==="r"){p.x+=p.vx;p.y+=p.vy;p.vy+=.12;cx.fillStyle="#ffe7b0";cx.beginPath();cx.arc(p.x,p.y,2.5,0,7);cx.fill();
+        if(p.vy>-1.5){p.dead=true;born.push(p)}}
+      else{p.vx*=.97;p.vy=p.vy*.97+.05;p.x+=p.vx;p.y+=p.vy;const a=1-p.life/p.max;cx.globalAlpha=Math.max(0,a);cx.fillStyle=p.c;
+        cx.beginPath();cx.arc(p.x,p.y,2.2,0,7);cx.fill();cx.globalAlpha=1;if(p.life>p.max)p.dead=true}
+    }
+    born.forEach(explode);beat*=.9;
+    P=P.filter(p=>!p.dead&&(p.k==="f"||(p.y<innerHeight+60&&p.life<420)));
+    raf=P.length?requestAnimationFrame(loop):(cx.clearRect(0,0,innerWidth,innerHeight),null);
+  }
+  return {confetti,rocket,fly,gather,pulse,burstFlies,clearFlies};
+})();
+
+/* ================= Photos: finds photos/1.jpg, 2.jpg … by itself ================= */
+const exts=["jpg","jpeg","png","webp","JPG","JPEG","PNG"];
+const probe=src=>new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src});
+async function findPhotos(){
+  const found=[];let misses=0;
+  for(let n=1;n<=120&&misses<2;n++){
+    let hit=null;for(const e of exts){hit=await probe(`photos/${n}.${e}`);if(hit)break}
+    if(hit){found.push(hit.src);misses=0}else misses++;
+  }
+  return found;
+}
+let photosReady=findPhotos();
+
+/* ================= Custom song (optional) ================= */
+const songEl=$("song"),cakeEl=$("cakeSong");let hasSong=false,hasCake=false;
+const songExts=["mp3","mpeg","mpga","mpg","m4a","aac","wav","ogg","MP3","MPEG","M4A","WAV"];
+const tryAudio=(el,src)=>new Promise(r=>{
+  const done=ok=>{el.oncanplaythrough=el.onerror=null;clearTimeout(t);r(ok)};
+  el.oncanplaythrough=()=>done(true);el.onerror=()=>done(false);
+  const t=setTimeout(()=>done(el.readyState>=3),3000);
+  el.src=src;el.load();
+});
+async function loadAudio(el,path){
+  const base=path.replace(/\.[a-z0-9]+$/i,"");
+  for(const e of songExts){if(await tryAudio(el,base+"."+e))return true}
+  el.removeAttribute("src");return false;
+}
+const songReady=loadAudio(songEl,CONFIG.song).then(ok=>hasSong=ok);
+const cakeReady=loadAudio(cakeEl,CONFIG.cakeSong).then(ok=>hasCake=ok);
+function fadeAudio(el,to,ms){const from=el.volume,t0=performance.now();
+  return new Promise(r=>{(function f(){const k=Math.min(1,(performance.now()-t0)/ms);el.volume=from+(to-from)*k;k<1?requestAnimationFrame(f):r()})()})}
+
+$("introTitle").textContent="كل سنة وانتي طيبة يا "+CONFIG.firstName;
+
+/* ================= Phone helpers (Samsung / Android) ================= */
+const Phone={
+  lock:null,
+  async wake(){try{if("wakeLock" in navigator){this.lock=await navigator.wakeLock.request("screen")}}catch(e){}},
+  full(){const d=document.documentElement,f=d.requestFullscreen||d.webkitRequestFullscreen;
+    try{if(f&&!document.fullscreenElement&&matchMedia("(pointer:coarse)").matches)f.call(d,{navigationUI:"hide"})?.catch?.(()=>{})}catch(e){}},
+  buzz(p){try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}},
+  unlockAudio(){try{const was=songEl.muted;songEl.muted=true;const p=songEl.play();if(p)p.then(()=>{songEl.pause();songEl.currentTime=0;songEl.muted=was}).catch(()=>{songEl.muted=was})}catch(e){}}
+};
+document.addEventListener("visibilitychange",()=>{
+  if(document.visibilityState==="visible"){if(Phone.lock!==null)Phone.wake();Music.ctx&&Music.ctx.resume()}
+});
+document.addEventListener("contextmenu",e=>{if(e.target.closest(".holdbtn,.slide,img"))e.preventDefault()});
+
+/* ================= Intro ================= */
+$("openBtn").onclick=()=>{
+  Phone.full();Phone.wake();Phone.unlockAudio();
+  if(hasCake){Music.fxOnly();cakeEl.currentTime=0;cakeEl.volume=0;cakeEl.muted=Music.muted;cakeEl.play().catch(()=>{});fadeAudio(cakeEl,1,2000)}
+  else Music.play("box");$("mute").classList.remove("hidden");
+  Cake.start();
+};
+$("mute").onclick=()=>{
+  Music.muted=!Music.muted;Music.fade(Music.muted?0:Music.vol);songEl.muted=Music.muted;cakeEl.muted=Music.muted;
+  $("mute").textContent=Music.muted?"🔇":"🔊";
+};
+
+/* ================= Cake ================= */
+const ar=n=>n.toLocaleString("ar-EG");
+const Cake={holding:false,an:null,stream:null,actx:null,raf:null,blowT:0,lastT:0,finished:false,
+  async start(){
+    show("cake");$("cake").classList.remove("dark");$("cakeCtrl").classList.remove("hidden");FX.clearFlies();this.finished=false;
+    $("cakeName").textContent=CONFIG.petName;if(hasCake){if(!cakeEl.paused)fadeAudio(cakeEl,.5,1500)}else Music.setVol(.3);
+    // 25 candles around the rim of the top tier, in perspective
+    const rim=$("rim"),n=CONFIG.age;let html="";
+    for(let i=0;i<n;i++){
+      const a=(i/n)*Math.PI*2+Math.PI/2,x=50+Math.cos(a)*44,y=50+Math.sin(a)*38,z=Math.round(10+Math.sin(a)*9);
+      html+=`<div class="candle${i%5===0?" gold":""}" style="left:${x}%;top:${y}%;z-index:${z}"><div class="flame sm" style="--d:${(Math.random()).toFixed(2)}"></div></div>`;
+    }
+    html+='<div class="digits">'+[...String(n)].map(d=>`<span class="num">${d}<span class="flame big"></span></span>`).join("")+"</div>";
+    rim.innerHTML=html;this.count();
+    this.blowT=0;this.lastT=performance.now();cancelAnimationFrame(this.raf);this.loop();
+    if(this.stream)return;
+    try{
+      this.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:false,autoGainControl:false}});
+      this.actx=new (window.AudioContext||window.webkitAudioContext)();await this.actx.resume();
+      const src=this.actx.createMediaStreamSource(this.stream);this.an=this.actx.createAnalyser();this.an.fftSize=1024;src.connect(this.an);
+      this.buf=new Float32Array(this.an.fftSize);
+      $("cakeSub").textContent="ثانية واحدة…";let amb=0;
+      for(let k=0;k<12;k++){await sleep(50);this.an.getFloatTimeDomainData(this.buf);let q=0;for(const v of this.buf)q+=v*v;amb=Math.max(amb,Math.sqrt(q/this.buf.length))}
+      this.gain=Math.min(14,Math.max(3,.55/Math.max(amb*2.2,.04)));
+      this.count();
+    }catch(e){$("cakeSub").textContent="المايك مش متاح، اضغطي مطوّل على الزرار اللي تحت";}
+  },
+  small(){return [...document.querySelectorAll("#rim .flame.sm:not(.out)")]},
+  big(){return [...document.querySelectorAll("#rim .flame.big:not(.out)")]},
+  count(){
+    if(this.finished)return;const s=this.small().length,b=this.big().length,sub=$("cakeSub");
+    if(s===CONFIG.age)sub.textContent=`${ar(CONFIG.age)} شمعة… نفخة واحدة مش هتكفي 😄`;
+    else if(s>0)sub.textContent=`فاضل ${ar(s)} شمعة… كمّلي!`;
+    else if(b>0)sub.textContent=`فاضل الـ${ar(CONFIG.age)} نفسها… آخر نفخة ❤️`;
+  },
+  level(){if(this.holding)return 1;if(!this.an)return 0;this.an.getFloatTimeDomainData(this.buf);let s=0;for(const v of this.buf)s+=v*v;return Math.min(1,Math.sqrt(s/this.buf.length)*(this.gain||6))},
+  loop(){
+    const now=performance.now(),dt=now-this.lastT;this.lastT=now;const lv=this.level();$("meter").style.width=lv*100+"%";
+    const sm=this.small(),bg=this.big();[...sm,...bg].forEach(f=>f.classList.toggle("wobble",lv>.35));
+    if(lv>.55){this.blowT+=dt;
+      if(this.blowT>150){this.blowT=0;
+        if(sm.length){const k=Math.min(sm.length,lv>.8?2:1);for(let j=0;j<k;j++)this.out(sm.splice(Math.random()*sm.length|0,1)[0])}
+        else if(bg.length){this.blowT=-250;bg.forEach(f=>this.out(f))}
+        this.count();
+      }}
+    else this.blowT=Math.max(0,this.blowT-dt*.5);
+    if(!this.small().length&&!this.big().length){this.done();return}
+    this.raf=requestAnimationFrame(()=>this.loop());
+  },
+  out(f){
+    Phone.buzz(f.classList.contains("big")?60:18);f.classList.add("out");f.classList.remove("wobble");
+    f.parentNode.insertAdjacentHTML("beforeend",'<div class="smoke"></div>');
+    const r=f.getBoundingClientRect();FX.fly(r.left+r.width/2,r.top+r.height/2);
+  },
+  stopMic(){cancelAnimationFrame(this.raf);if(this.stream)this.stream.getTracks().forEach(t=>t.stop());if(this.actx)this.actx.close();
+    this.stream=this.actx=this.an=null;this.holding=false},
+  async done(){
+    if(this.finished)return;this.finished=true;
+    this.stopMic();$("cakeCtrl").classList.add("hidden");$("cake").classList.add("dark");$("cakeSub").textContent="";
+    Music.fxOnly();if(hasCake)fadeAudio(cakeEl,0,1800).then(()=>cakeEl.pause());
+    // the 25 little lights float, then gather into a heart and beat… then BOOM
+    await sleep(1800);FX.gather();
+    await sleep(2400);
+    for(let b=0;b<3;b++){FX.pulse();Music.thump(0,.8);Phone.buzz(40);await sleep(230);FX.pulse();Music.thump(0,.55);Phone.buzz(30);await sleep(b<2?620:450)}
+    FX.burstFlies();Action.run();
+  }
+};
+const hb=$("holdBtn");
+const hDown=e=>{e.preventDefault();Cake.holding=true;hb.classList.add("active")},hUp=()=>{Cake.holding=false;hb.classList.remove("active")};
+hb.addEventListener("pointerdown",hDown);["pointerup","pointerleave","pointercancel"].forEach(v=>hb.addEventListener(v,hUp));
+hb.addEventListener("keydown",e=>{if(e.key===" "||e.key==="Enter")hDown(e)});hb.addEventListener("keyup",hUp);
+
+/* ================= Action: BOOM ================= */
+const Action={async run(){
+  $("boomName").textContent="يا "+CONFIG.petName;$("wait").classList.remove("on");
+  const b=$("boom");show("boom");
+  // re-trigger slam animations
+  b.querySelectorAll(".slam,.slam2").forEach(el=>{el.style.animation="none";void el.offsetWidth;el.style.animation=""});
+  b.classList.remove("flash","shake");void b.offsetWidth;b.classList.add("flash","shake");
+  if(hasSong){Music.fxOnly();songEl.currentTime=0;songEl.volume=0;songEl.muted=Music.muted;songEl.play().catch(()=>{});fadeAudio(songEl,1,1200)}
+  else{Music.play("film");Music.vol=.8;Music.fade(Music.muted?0:.8,.05)}
+  Music.boom(0,1.2);FX.confetti(260);Phone.buzz([180,60,90,60,300]);
+  for(let i=0;i<9;i++){setTimeout(()=>FX.rocket(),400+i*550)}
+  setTimeout(()=>FX.confetti(160),2200);
+  await sleep(5200);$("wait").classList.add("on");
+  await sleep(2600);Film.run();
+}};
+
+/* ================= Film ================= */
+const Film={stopFlag:false,
+  async run(){
+    this.stopFlag=false;
+    const photos=await photosReady;
+    if(!photos.length){Final.run();return}
+    const useSong=await songReady;
+    show("film");$("film").classList.remove("on");void $("film").offsetWidth;$("film").classList.add("on");
+    const tc=$("titlecard");$("filmTitle").textContent=CONFIG.filmTitle;tc.classList.remove("gone");
+    $("film").classList.remove("bars");void $("film").offsetWidth;
+    ["sA","sB"].forEach(id=>$(id).classList.remove("on","kb"));$("caption").classList.remove("on");$("prog").style.width="0";
+    if(useSong&&songEl.paused){Music.fxOnly();songEl.currentTime=0;songEl.volume=0;songEl.muted=Music.muted;songEl.play().catch(()=>{});fadeAudio(songEl,1,2500)}
+    await sleep(300);$("film").classList.add("bars");
+    await sleep(3200);if(this.stopFlag)return;tc.classList.add("gone");
+    // duration per photo: fits the song length if there is one
+    let per=5600;
+    if(useSong&&isFinite(songEl.duration)){per=Math.min(8000,Math.max(3500,(songEl.duration-songEl.currentTime-12)*1000/photos.length))}
+    const layers=[$("sA"),$("sB")];
+    for(let i=0;i<photos.length;i++){
+      if(this.stopFlag)return;
+      const L=layers[i%2],O=layers[(i+1)%2];
+      const fg=L.querySelector(".fg"),bg=L.querySelector(".bg");fg.src=photos[i];bg.src=photos[i];
+      try{await fg.decode()}catch(e){}
+      L.style.setProperty("--dur",(per+1500)/1000+"s");L.classList.remove("kb","alt");void L.offsetWidth;
+      L.classList.add("kb");if(i%2)L.classList.add("alt");L.classList.add("on");O.classList.remove("on");
+      const cap=$("caption"),txt=(CONFIG.captions[i]||"").trim();cap.classList.remove("on");
+      setTimeout(()=>{if(txt){cap.textContent=txt;cap.classList.add("on")}},900);
+      setTimeout(()=>cap.classList.remove("on"),per-700);
+      $("prog").style.width=((i+1)/photos.length*100)+"%";
+      await sleep(per);
+    }
+    this.end(useSong);
+  },
+  async end(useSong){
+    if(this.stopFlag)return;this.stopFlag=true;
+    $("sA").classList.remove("on");$("sB").classList.remove("on");$("caption").classList.remove("on");
+    await sleep(1400);
+    if(useSong)fadeAudio(songEl,.35,3000);
+    Final.run();
+  }
+};
+$("skip").onclick=()=>{Film.stopFlag=false;Film.end(hasSong)};
+
+/* ================= Final letter (typed) ================= */
+const Final={async run(){
+  show("final");$("letterTitle").textContent=CONFIG.letterTitle;
+  const body=$("letterBody");body.innerHTML="";$("again").classList.remove("on");
+  if(!hasSong)Music.setVol(.45);
+  const L=CONFIG.letter;
+  for(let i=0;i<L.length;i++){
+    const line=L[i],isWish=line.startsWith("كل سنة")||line.startsWith("وكل سنة");
+    const p=document.createElement("p");body.appendChild(p);
+    if(isWish){
+      p.className="wish"+(i===L.length-1?" last":"");p.textContent=line;
+      await sleep(60);p.classList.add("on");Music.sparkle();
+      if(i===L.length-1){FX.confetti(220);setTimeout(()=>{FX.rocket();FX.rocket()},600)}
+      await sleep(1300);
+    }else{
+      p.className="line";
+      for(const ch of line){p.textContent+=ch;await sleep(ch===" "?30:55)}
+      await sleep(line.length<6?900:600);
+    }
+  }
+  await sleep(1500);$("again").classList.add("on");
+}};
+$("replayFilm").onclick=()=>{songEl.pause();Music.setVol(.8);Film.run()};
+$("replayAll").onclick=()=>{songEl.pause();if(hasCake){Music.fxOnly();cakeEl.currentTime=0;cakeEl.volume=1;cakeEl.play().catch(()=>{})}else Music.play("box");Cake.start()};
+</script>
+</body>
+</html>
